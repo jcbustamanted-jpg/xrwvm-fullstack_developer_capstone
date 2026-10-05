@@ -12,7 +12,7 @@ class CarMake(models.Model):
 
 
 class CarModel(models.Model):
-    dealer_id = models.IntegerField()
+    dealer_id = models.IntegerField(default=0)
 
     CAR_TYPES = [
         ('Sedan', 'Sedan'),
