@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import CarMake, CarModel
 from .populate import initiate
-from .restapis import get_request
+from .restapis import get_request, analyze_review_sentiments
 
 
 # Get an instance of a logger
@@ -115,9 +115,18 @@ def get_dealerships(request, state="All"):
 
 
 # Create a `get_dealer_reviews` view to render the reviews of a dealer
-# This will be implemented after the sentiment analyzer is configured.
-# def get_dealer_reviews(request, dealer_id):
-# ...
+def get_dealer_reviews(request, dealer_id):
+    endpoint = "/fetchReviews/dealer/" + str(dealer_id)
+    reviews = get_request(endpoint)
+
+    for review_detail in reviews:
+        sentiment = analyze_review_sentiments(review_detail['review'])
+        review_detail['sentiment'] = sentiment['sentiment']
+
+    return JsonResponse({
+        "status": 200,
+        "reviews": reviews
+    })
 
 
 # Create a `get_dealer_details` view to render the dealer details
